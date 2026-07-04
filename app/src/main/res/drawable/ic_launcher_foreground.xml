@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Outer industrial circle -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#79F7EA"
+        android:strokeWidth="4"
+        android:pathData="M 54,24 A 30,30 0 1 1 53.99,24 Z" />
+    <!-- Gear center inner core -->
+    <path
+        android:fillColor="#79F7EA"
+        android:pathData="M 54,44 A 10,10 0 1 1 53.99,44 Z" />
+    <!-- Vertical scanning brackets -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M 34,44 L 34,34 L 44,34" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M 74,44 L 74,34 L 64,34" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M 34,64 L 34,74 L 44,74" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M 74,64 L 74,74 L 64,74" />
+    <!-- Laser scanner line in the middle -->
+    <path
+        android:strokeColor="#79F7EA"
+        android:strokeWidth="3"
+        android:pathData="M 28,54 L 80,54" />
+</vector>

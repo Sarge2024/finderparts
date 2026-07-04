@@ -1,0 +1,6 @@
+{
+  "name": "Finder Parts",
+  "description": "Sistema de registro, escaneamento e associação cruzada de peças automotivas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
