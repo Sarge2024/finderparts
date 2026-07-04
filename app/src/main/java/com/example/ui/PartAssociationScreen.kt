@@ -1146,11 +1146,10 @@ fun MinhasPecasTab(viewModel: PartAssociationViewModel) {
                                                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold, color = IndustrialPrimary)
                                             )
                 }
-                }
             }
         }
 
-        // Logout
+        // Logout button
         item {
             OutlinedButton(
                 onClick = onLogout,
@@ -1166,6 +1165,7 @@ fun MinhasPecasTab(viewModel: PartAssociationViewModel) {
         }
     }
 }
+                    }
                 }
             }
         }
