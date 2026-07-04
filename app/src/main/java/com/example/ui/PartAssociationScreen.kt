@@ -1715,5 +1715,20 @@ fun PerfilTab(viewModel: PartAssociationViewModel) {
                 }
             }
         }
+
+        // Logout button
+        item {
+            OutlinedButton(
+                onClick = onLogout,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = StatusRed),
+                border = ButtonDefaults.outlinedButtonBorder.copy(brush = Brush.linearGradient(listOf(StatusRed.copy(alpha = 0.5f), StatusRed.copy(alpha = 0.3f)))),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Icon(Icons.Default.Logout, "Sair", Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("SAIR DA CONTA", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold))
+            }
+        }
     }
 }
