@@ -183,7 +183,7 @@ fun PartAssociationScreen(viewModel: PartAssociationViewModel, onLogout: () -> U
                 "ESCANEAR" -> EscanearTab(viewModel)
                 "MINHAS PEÇAS" -> MinhasPecasTab(viewModel)
                 "BUSCAR" -> BuscarTab(viewModel)
-                "PERFIL" -> PerfilTab(viewModel)
+                "PERFIL" -> PerfilTab(viewModel, onLogout)
             }
         }
     }
@@ -1270,7 +1270,7 @@ fun BuscarTab(viewModel: PartAssociationViewModel) {
 }
 
 @Composable
-fun PerfilTab(viewModel: PartAssociationViewModel) {
+fun PerfilTab(viewModel: PartAssociationViewModel, onLogout: () -> Unit = {}) {
     val associations by viewModel.allAssociations.collectAsState()
     val allVehicles by viewModel.allVehicles.collectAsState()
     val allParts by viewModel.allScannedParts.collectAsState()
