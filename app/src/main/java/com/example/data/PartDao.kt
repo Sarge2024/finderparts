@@ -30,5 +30,5 @@ interface PartDao {
     suspend fun insertAssociation(association: PartAssociation)
 
     @Query("DELETE FROM part_associations WHERE id = :id")
-    suspend fun deleteAssociationById(id: Int)
+    suspend fun deleteAssociationById(id: String)
 }

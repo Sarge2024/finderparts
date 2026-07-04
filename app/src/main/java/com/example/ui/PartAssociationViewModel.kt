@@ -172,7 +172,7 @@ class PartAssociationViewModel(private val repository: PartRepository) : ViewMod
         }
     }
 
-    fun deleteAssociation(id: Int) {
+    fun deleteAssociation(id: String) {
         viewModelScope.launch {
             repository.deleteAssociation(id)
             _showToastMessage.value = "Associação excluída"
