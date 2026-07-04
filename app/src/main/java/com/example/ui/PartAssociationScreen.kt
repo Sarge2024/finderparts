@@ -45,7 +45,7 @@ import com.example.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PartAssociationScreen(viewModel: PartAssociationViewModel) {
+fun PartAssociationScreen(viewModel: PartAssociationViewModel, onLogout: () -> Unit = {}) {
     val context = LocalContext.current
     val activeTab by viewModel.activeTab.collectAsState()
     val showToast by viewModel.showToastMessage.collectAsState()
@@ -1145,11 +1145,37 @@ fun MinhasPecasTab(viewModel: PartAssociationViewModel) {
                                                 text = "${v.brand} ${v.model}",
                                                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold, color = IndustrialPrimary)
                                             )
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                }
+            }
+        }
+
+        // Logout button
+        item {
+            OutlinedButton(
+                onClick = onLogout,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = StatusRed),
+                border = ButtonDefaults.outlinedButtonBorder.copy(
+                    brush = Brush.linearGradient(
+                        colors = listOf(StatusRed.copy(alpha = 0.5f), StatusRed.copy(alpha = 0.3f))
+                    )
+                ),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Logout,
+                    contentDescription = "Sair",
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "SAIR DA CONTA",
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            }
+        }
+    }
+}
                     }
                 }
             }
