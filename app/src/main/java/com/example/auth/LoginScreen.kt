@@ -1,10 +1,7 @@
 package com.example.auth
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,10 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -31,9 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 
 @Composable
 fun LoginScreen(authViewModel: AuthViewModel) {
@@ -44,37 +35,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     val uiState by authViewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
-    // Google Sign-In launcher
-    val gso = remember {
-        val webClientId = try {
-            context.getString(context.resources.getIdentifier("default_web_client_id", "string", context.packageName))
-        } catch (_: Exception) { "" }
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .apply { if (webClientId.isNotEmpty()) requestIdToken(webClientId) }
-            .requestEmail()
-            .build()
-    }
-    val googleSignInClient = remember { GoogleSignIn.getClient(context, gso) }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                account?.idToken?.let { token ->
-                    authViewModel.loginWithGoogle(token)
-                }
-            } catch (e: ApiException) {
-                authViewModel.clearError()
-            }
-        }
-    }
-
-    // Show error as Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState) {
         if (uiState is AuthUiState.Error) {
@@ -102,7 +63,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
             ) {
                 Spacer(modifier = Modifier.height(80.dp))
 
-                // Logo / App name
+                // Logo
                 Box(
                     modifier = Modifier
                         .size(72.dp)
@@ -166,7 +127,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                     }
                 }
 
-                // Email field
+                // Email
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -191,7 +152,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Password field
+                // Password
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -260,69 +221,9 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Divider "OU"
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    HorizontalDivider(
-                        modifier = Modifier.weight(1f),
-                        color = IndustrialTertiaryFixed.copy(alpha = 0.2f)
-                    )
-                    Text(
-                        text = "  OU  ",
-                        color = IndustrialTertiaryFixed.copy(alpha = 0.5f),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                    HorizontalDivider(
-                        modifier = Modifier.weight(1f),
-                        color = IndustrialTertiaryFixed.copy(alpha = 0.2f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Google Sign-In button
-                OutlinedButton(
-                    onClick = {
-                        val signInIntent = googleSignInClient.signInIntent
-                        launcher.launch(signInIntent)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    enabled = uiState !is AuthUiState.Loading,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = IndustrialTertiaryFixed
-                    ),
-                    border = ButtonDefaults.outlinedButtonBorder.copy(
-                        brush = Brush.linearGradient(
-                            colors = listOf(IndustrialTertiaryFixed.copy(alpha = 0.5f), IndustrialTertiaryFixed.copy(alpha = 0.3f))
-                        )
-                    ),
-                    shape = RoundedCornerShape(4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = null,
-                        tint = IndustrialTertiaryFixed,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "CONTINUAR COM GOOGLE",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.5.sp
-                        )
-                    )
-                }
-
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Toggle login/register mode
+                // Toggle login/register
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -335,9 +236,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                     Text(
                         text = if (isLoginMode) "Criar conta" else "Fazer login",
                         color = IndustrialTertiaryFixed,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                         modifier = Modifier.clickable {
                             isLoginMode = !isLoginMode
                             authViewModel.clearError()
@@ -347,13 +246,10 @@ fun LoginScreen(authViewModel: AuthViewModel) {
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // Footer
                 Text(
                     text = "SAGACITAS SaaS",
                     color = IndustrialTertiaryFixed.copy(alpha = 0.3f),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        letterSpacing = 2.sp
-                    ),
+                    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 2.sp),
                     textAlign = TextAlign.Center
                 )
             }

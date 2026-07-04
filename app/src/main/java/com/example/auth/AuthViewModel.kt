@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -64,19 +63,6 @@ class AuthViewModel : ViewModel() {
                         .setDisplayName(name)
                         .build()
                 )?.await()
-                _uiState.value = AuthUiState.Authenticated
-            } catch (e: Exception) {
-                _uiState.value = AuthUiState.Error(truncateError(e.message))
-            }
-        }
-    }
-
-    fun loginWithGoogle(idToken: String) {
-        viewModelScope.launch {
-            _uiState.value = AuthUiState.Loading
-            try {
-                val credential = GoogleAuthProvider.getCredential(idToken, null)
-                auth.signInWithCredential(credential).await()
                 _uiState.value = AuthUiState.Authenticated
             } catch (e: Exception) {
                 _uiState.value = AuthUiState.Error(truncateError(e.message))
