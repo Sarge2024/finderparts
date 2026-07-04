@@ -237,7 +237,11 @@ fun EscanearTab(viewModel: PartAssociationViewModel) {
 
         // Section C: Scanner Preview Box
         item {
-            ScannerBox(scannedPart = scannedPart, onSimulateScan = { viewModel.simulateScan() })
+            ScannerBox(
+                scannedPart = scannedPart, 
+                onSimulateScan = { viewModel.simulateScan() },
+                onBarcodeScanned = { barcode -> viewModel.simulateScan(barcode) }
+            )
         }
 
         // Section Original Reference Card
@@ -386,8 +390,12 @@ fun EscanearTab(viewModel: PartAssociationViewModel) {
     }
 }
 
+@OptIn(com.google.accompanist.permissions.ExperimentalPermissionsApi::class)
 @Composable
-fun ScannerBox(scannedPart: ScannedPart?, onSimulateScan: () -> Unit) {
+fun ScannerBox(scannedPart: ScannedPart?, onSimulateScan: () -> Unit, onBarcodeScanned: (String) -> Unit) {
+    val cameraPermissionState = com.google.accompanist.permissions.rememberPermissionState(
+        android.Manifest.permission.CAMERA
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -407,19 +415,33 @@ fun ScannerBox(scannedPart: ScannedPart?, onSimulateScan: () -> Unit) {
                     .alpha(0.85f)
             )
         } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.CameraAlt,
-                        contentDescription = "Camera placeholder",
-                        tint = Color.DarkGray,
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Nenhuma peça escaneada", color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
+            if (cameraPermissionState.status.isGranted) {
+                com.example.ui.camera.CameraPreview(
+                    onBarcodeScanned = onBarcodeScanned,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Camera placeholder",
+                            tint = Color.DarkGray,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Sem permissão para Câmera", color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = { cameraPermissionState.launchPermissionRequest() },
+                            colors = ButtonDefaults.buttonColors(containerColor = IndustrialPrimary)
+                        ) {
+                            Text("Autorizar Câmera", color = Color.White)
+                        }
+                    }
                 }
             }
         }
