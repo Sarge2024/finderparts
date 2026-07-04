@@ -38,8 +38,8 @@ class PartRepository(private val partDao: PartDao) {
     suspend fun insertAssociation(association: PartAssociation) {
         try {
             val map = mapOf(
-                "codigo_barras" to association.barcode,
-                "veiculo_id" to association.primaryVehicleId
+                "IDComp" to association.barcode,
+                "IDVeiculo" to association.primaryVehicleId
             )
             NetworkModule.supabaseApi.insertAssociation(map)
         } catch (e: Exception) {

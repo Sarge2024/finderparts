@@ -1,6 +1,5 @@
 package com.example.data.remote
 
-import com.example.data.PartAssociation
 import com.example.data.ScannedPart
 import com.example.data.Vehicle
 import retrofit2.http.Body
@@ -12,10 +11,10 @@ interface SupabaseApi {
     @GET("rest/v1/veiculos?select=*")
     suspend fun getVehicles(): List<Vehicle>
 
-    // Utilizando o eq. para filtrar no PostgREST
-    @GET("rest/v1/produtos_fisicos?select=*")
-    suspend fun getScannedPart(@Query("codigo_barras") barcodeQuery: String): List<ScannedPart>
+    // "Tabela para receber o scanner será a tabela de componentes"
+    @GET("rest/v1/componentes?select=*")
+    suspend fun getScannedPart(@Query("IDComp") barcodeQuery: String): List<ScannedPart>
 
-    @POST("rest/v1/compatibilidade_pecas")
+    @POST("rest/v1/aplica")
     suspend fun insertAssociation(@Body association: Map<String, Any>)
 }

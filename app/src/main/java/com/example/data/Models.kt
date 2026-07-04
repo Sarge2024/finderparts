@@ -11,34 +11,38 @@ import java.util.UUID
 @JsonClass(generateAdapter = true)
 data class Vehicle(
     @PrimaryKey
-    @field:Json(name = "id") val id: String = UUID.randomUUID().toString(),
+    @field:Json(name = "IDVeiculo") val id: String = UUID.randomUUID().toString(),
 
-    @field:Json(name = "marca") val brand: String = "",
+    @field:Json(name = "Marca") val brand: String = "",
     
-    @field:Json(name = "modelo") val model: String = "",
+    @field:Json(name = "Modelo") val model: String = "",
     
-    @field:Json(name = "modificacao_ano") val modification: String = "",
+    @field:Json(name = "Versao") val modification: String = "",
     
-    @field:Json(name = "regiao") val region: String = "BR",
-    
-    @Transient val year: Int = 0 // Campo transiente para manter compatibilidade com UI caso não venha do banco
-)
+    @field:Json(name = "ano") val yearStr: String? = null
+) {
+    @Transient val year: Int = yearStr?.toIntOrNull() ?: 0
+}
 
 @Entity(tableName = "scanned_parts")
 @JsonClass(generateAdapter = true)
 data class ScannedPart(
     @PrimaryKey 
-    @field:Json(name = "codigo_barras") val barcode: String,
+    @field:Json(name = "IDComp") val barcode: String,
     
-    @field:Json(name = "nome_comercial") val name: String,
+    @field:Json(name = "Descricao") val name: String = "",
     
-    @field:Json(name = "fabricante") val originalReference: String,
+    @field:Json(name = "Fabricante") val originalReference: String = "",
     
-    // Como a specification era local, podemos usar um default 
-    @Transient val specification: String = "",
+    @field:Json(name = "CodFabr") val codFabr: String = "",
     
-    @field:Json(name = "imagem_url") val imageUrl: String? = null
-)
+    @field:Json(name = "Grupo") val group: String = "",
+    
+    @field:Json(name = "Subgrupo") val subgroup: String = ""
+) {
+    @Transient val specification: String = ""
+    @Transient val imageUrl: String? = null
+}
 
 @Entity(tableName = "part_associations")
 @JsonClass(generateAdapter = true)
@@ -46,14 +50,13 @@ data class PartAssociation(
     @PrimaryKey
     @field:Json(name = "id") val id: String = UUID.randomUUID().toString(),
 
-    @field:Json(name = "codigo_barras") val barcode: String,
+    @field:Json(name = "IDComp") val barcode: String,
     
-    @field:Json(name = "veiculo_id") val primaryVehicleId: String,
-    
-    @Transient val compatibleVehicleIds: List<String> = emptyList(), // O Supabase na spec é Many-to-One por associação
-    
+    @field:Json(name = "IDVeiculo") val primaryVehicleId: String
+) {
+    @Transient val compatibleVehicleIds: List<String> = emptyList()
     @Transient val timestamp: Long = System.currentTimeMillis()
-)
+}
 
 class Converters {
     @TypeConverter
