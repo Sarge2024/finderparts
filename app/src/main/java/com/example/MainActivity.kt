@@ -8,7 +8,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.example.auth.AuthViewModel
+import com.example.auth.LoginScreen
 import com.example.data.AppDatabase
 import com.example.data.PartRepository
 import com.example.ui.PartAssociationScreen
@@ -24,17 +28,20 @@ class MainActivity : ComponentActivity() {
         val database = AppDatabase.getDatabase(this)
         val repository = PartRepository(database.partDao())
 
-        val viewModel: PartAssociationViewModel by viewModels {
+        val partViewModel: PartAssociationViewModel by viewModels {
             PartAssociationViewModelFactory(repository)
         }
+        val authViewModel: AuthViewModel by viewModels()
 
         setContent {
             MyApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    PartAssociationScreen(viewModel = viewModel)
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    val user by authViewModel.user.collectAsState()
+                    if (user != null) {
+                        PartAssociationScreen(viewModel = partViewModel, onLogout = { authViewModel.logout() })
+                    } else {
+                        LoginScreen(authViewModel = authViewModel)
+                    }
                 }
             }
         }
