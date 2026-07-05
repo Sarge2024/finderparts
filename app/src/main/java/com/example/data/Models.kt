@@ -52,11 +52,11 @@ data class PartAssociation(
 
     @field:Json(name = "IDComp") val barcode: String,
     
-    @field:Json(name = "IDVeiculo") val primaryVehicleId: String
-) {
-    @Transient val compatibleVehicleIds: List<String> = emptyList()
-    @Transient val timestamp: Long = System.currentTimeMillis()
-}
+    @field:Json(name = "IDVeiculo") val primaryVehicleId: String,
+
+    val compatibleVehicleIds: List<String> = emptyList(),
+    val timestamp: Long = System.currentTimeMillis()
+)
 
 class Converters {
     @TypeConverter

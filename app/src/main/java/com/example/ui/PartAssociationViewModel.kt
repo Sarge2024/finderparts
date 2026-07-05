@@ -122,6 +122,19 @@ class PartAssociationViewModel(private val repository: PartRepository) : ViewMod
         }
     }
 
+    fun onBarcodeScanned(barcode: String) {
+        viewModelScope.launch {
+            _showToastMessage.value = "Lendo código: $barcode"
+            val part = repository.getScannedPartByBarcode(barcode)
+            if (part != null) {
+                _scannedPart.value = part
+                _showToastMessage.value = "Peça encontrada: ${part.name}"
+            } else {
+                _showToastMessage.value = "Código lido: $barcode (Peça não encontrada no banco)"
+            }
+        }
+    }
+
     fun selectPrimaryVehicle(vehicle: Vehicle) {
         _primaryVehicle.value = vehicle
         // Remove it from compatibility if it was there to prevent duplicates

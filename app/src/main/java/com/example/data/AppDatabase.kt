@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [Vehicle::class, ScannedPart::class, PartAssociation::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -25,7 +25,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "sagacitas_parts_db"
-                ).build()
+                ).fallbackToDestructiveMigration(true)
+                    .build()
                 INSTANCE = instance
                 instance
             }

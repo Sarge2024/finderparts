@@ -2,6 +2,7 @@ package com.example.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -13,21 +14,37 @@ import kotlinx.coroutines.tasks.await
 
 class AuthViewModel : ViewModel() {
 
-    private val auth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth? by lazy {
+        try {
+            FirebaseAuth.getInstance()
+        } catch (e: Exception) {
+            null
+        }
+    }
 
-    private val _user = MutableStateFlow<FirebaseUser?>(auth.currentUser)
+    private val _user = MutableStateFlow<FirebaseUser?>(null)
     val user: StateFlow<FirebaseUser?> = _user.asStateFlow()
 
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
     init {
-        auth.addAuthStateListener { firebaseAuth ->
+        auth?.let { firebaseAuth ->
             _user.value = firebaseAuth.currentUser
+            firebaseAuth.addAuthStateListener {
+                _user.value = it.currentUser
+            }
+        } ?: run {
+            _uiState.value = AuthUiState.Error("Firebase não inicializado. Verifique o arquivo google-services.json")
         }
     }
 
     fun loginWithEmail(email: String, password: String) {
+        val currentAuth = auth
+        if (currentAuth == null) {
+            _uiState.value = AuthUiState.Error("Firebase não disponível")
+            return
+        }
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = AuthUiState.Error("Preencha todos os campos")
             return
@@ -35,7 +52,7 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             try {
-                auth.signInWithEmailAndPassword(email, password).await()
+                currentAuth.signInWithEmailAndPassword(email, password).await()
                 _uiState.value = AuthUiState.Authenticated
             } catch (e: Exception) {
                 _uiState.value = AuthUiState.Error(truncateError(e.message))
@@ -44,6 +61,11 @@ class AuthViewModel : ViewModel() {
     }
 
     fun registerWithEmail(email: String, password: String, name: String) {
+        val currentAuth = auth
+        if (currentAuth == null) {
+            _uiState.value = AuthUiState.Error("Firebase não disponível")
+            return
+        }
         if (email.isBlank() || password.isBlank() || name.isBlank()) {
             _uiState.value = AuthUiState.Error("Preencha todos os campos")
             return
@@ -55,7 +77,7 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             try {
-                val result = auth.createUserWithEmailAndPassword(email, password).await()
+                val result = currentAuth.createUserWithEmailAndPassword(email, password).await()
                 result.user?.updateProfile(
                     com.google.firebase.auth.UserProfileChangeRequest.Builder()
                         .setDisplayName(name)
@@ -69,11 +91,16 @@ class AuthViewModel : ViewModel() {
     }
 
     fun loginWithGoogle(idToken: String) {
+        val currentAuth = auth
+        if (currentAuth == null) {
+            _uiState.value = AuthUiState.Error("Firebase não disponível")
+            return
+        }
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             try {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
-                auth.signInWithCredential(credential).await()
+                currentAuth.signInWithCredential(credential).await()
                 _uiState.value = AuthUiState.Authenticated
             } catch (e: Exception) {
                 _uiState.value = AuthUiState.Error(truncateError(e.message))
@@ -82,7 +109,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun logout() {
-        auth.signOut()
+        auth?.signOut()
         _uiState.value = AuthUiState.Idle
     }
 

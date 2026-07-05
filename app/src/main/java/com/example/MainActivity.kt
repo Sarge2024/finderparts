@@ -36,8 +36,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    // Firebase bypass for development
+                    val bypassLogin = true 
                     val user by authViewModel.user.collectAsState()
-                    if (user != null) {
+                    
+                    if (bypassLogin || user != null) {
                         PartAssociationScreen(viewModel = partViewModel, onLogout = { authViewModel.logout() })
                     } else {
                         LoginScreen(authViewModel = authViewModel)

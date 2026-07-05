@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.google.accompanist.permissions.isGranted
 import com.example.data.PartAssociation
 import com.example.data.ScannedPart
 import com.example.data.Vehicle
@@ -240,7 +241,7 @@ fun EscanearTab(viewModel: PartAssociationViewModel) {
             ScannerBox(
                 scannedPart = scannedPart, 
                 onSimulateScan = { viewModel.simulateScan() },
-                onBarcodeScanned = { barcode -> viewModel.simulateScan(barcode) }
+                onBarcodeScanned = { barcode -> viewModel.onBarcodeScanned(barcode) }
             )
         }
 

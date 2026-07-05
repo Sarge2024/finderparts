@@ -96,13 +96,13 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                     modifier = Modifier.size(72.dp).clip(CircleShape).background(IndustrialTertiaryFixed.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.QrCodeScanner, "Finder Parts", IndustrialTertiaryFixed, Modifier.size(36.dp))
+                    Icon(Icons.Default.QrCodeScanner, contentDescription = "Finder Parts", tint = IndustrialTertiaryFixed, modifier = Modifier.size(36.dp))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("FINDER PARTS", IndustrialTertiaryFixed, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = 2.sp))
+                Text("FINDER PARTS", color = IndustrialTertiaryFixed, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = 2.sp))
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(if (isLoginMode) "Acesse sua conta" else "Crie sua conta", IndustrialTertiaryFixed.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
+                Text(if (isLoginMode) "Acesse sua conta" else "Crie sua conta", color = IndustrialTertiaryFixed.copy(alpha = 0.6f), style = MaterialTheme.typography.bodyMedium)
 
                 Spacer(modifier = Modifier.height(48.dp))
 
@@ -143,8 +143,8 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                     colors = ButtonDefaults.buttonColors(containerColor = IndustrialTertiaryFixed),
                     shape = RoundedCornerShape(4.dp)
                 ) {
-                    if (uiState is AuthUiState.Loading) CircularProgressIndicator(IndustrialOnPrimaryFixed, Modifier.size(24.dp), strokeWidth = 2.dp)
-                    else Text(if (isLoginMode) "ENTRAR" else "CRIAR CONTA", IndustrialOnPrimaryFixed, style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp))
+                    if (uiState is AuthUiState.Loading) CircularProgressIndicator(color = IndustrialOnPrimaryFixed, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    else Text(if (isLoginMode) "ENTRAR" else "CRIAR CONTA", color = IndustrialOnPrimaryFixed, style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -152,7 +152,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                 // Divider
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     HorizontalDivider(Modifier.weight(1f), color = IndustrialTertiaryFixed.copy(alpha = 0.2f))
-                    Text("  OU  ", IndustrialTertiaryFixed.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold))
+                    Text("  OU  ", color = IndustrialTertiaryFixed.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold))
                     HorizontalDivider(Modifier.weight(1f), color = IndustrialTertiaryFixed.copy(alpha = 0.2f))
                 }
 
@@ -167,7 +167,7 @@ fun LoginScreen(authViewModel: AuthViewModel) {
                     border = ButtonDefaults.outlinedButtonBorder.copy(brush = Brush.linearGradient(listOf(IndustrialTertiaryFixed.copy(alpha = 0.5f), IndustrialTertiaryFixed.copy(alpha = 0.3f)))),
                     shape = RoundedCornerShape(4.dp)
                 ) {
-                    Icon(Icons.Default.AccountCircle, null, IndustrialTertiaryFixed, Modifier.size(20.dp))
+                    Icon(Icons.Default.AccountCircle, contentDescription = null, tint = IndustrialTertiaryFixed, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(12.dp))
                     Text("CONTINUAR COM GOOGLE", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp))
                 }
@@ -176,13 +176,13 @@ fun LoginScreen(authViewModel: AuthViewModel) {
 
                 // Toggle
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Text(if (isLoginMode) "Não tem conta? " else "Já tem conta? ", IndustrialTertiaryFixed.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
-                    Text(if (isLoginMode) "Criar conta" else "Fazer login", IndustrialTertiaryFixed, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    Text(if (isLoginMode) "Não tem conta? " else "Já tem conta? ", color = IndustrialTertiaryFixed.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                    Text(if (isLoginMode) "Criar conta" else "Fazer login", color = IndustrialTertiaryFixed, style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                         modifier = Modifier.clickable { isLoginMode = !isLoginMode; authViewModel.clearError() })
                 }
 
                 Spacer(modifier = Modifier.height(48.dp))
-                Text("SAGACITAS SaaS", IndustrialTertiaryFixed.copy(alpha = 0.3f), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 2.sp), textAlign = TextAlign.Center)
+                Text("SAGACITAS SaaS", color = IndustrialTertiaryFixed.copy(alpha = 0.3f), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 2.sp), textAlign = TextAlign.Center)
             }
         }
     }
